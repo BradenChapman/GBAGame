@@ -25,6 +25,9 @@ typedef struct {
 
     int playerxLocation;
     int playeryLocation;
+
+    int stringxLocation;
+    int stringyLocation;
     /*
     * TA-TODO: Add any logical elements you need to keep track of in your app.
     *
@@ -62,5 +65,6 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
 
 // If you have anything else you need accessible from outside the logic.c
 // file, you can add them here. You likely won't.
+int* checkForCollisions(AppState *currentAppState);
 
 #endif

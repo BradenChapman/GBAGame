@@ -12,8 +12,6 @@ void initializeAppState(AppState* appState) {
     appState->coins[2].y = 32;
     appState->coins[3].x = 196;
     appState->coins[3].y = 67;
-    appState->coins[4].x = 136;
-    appState->coins[4].x = 92;
 
     appState->bombs[0].x = 118;
     appState->bombs[0].y = 102;
@@ -25,8 +23,11 @@ void initializeAppState(AppState* appState) {
     appState->numOfCoinsCollected = 0;
     appState->gameOver = 0; 
 
-    appState->playerxLocation = 0;
-    appState->playeryLocation = 140;
+    appState->playerxLocation = 220;
+    appState->playeryLocation = 120;
+
+    appState->stringxLocation = 225;
+    appState->stringyLocation = 150;
 }
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
@@ -64,21 +65,51 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
      */
 
     AppState nextAppState = *currentAppState;
-    if (KEY_DOWN(BUTTON_L, keysPressedNow)){
-        nextAppState.playerxLocation--;
+
+    //Process movement
+   if (KEY_DOWN(BUTTON_L, keysPressedNow)){
+        if (nextAppState.playerxLocation > 0) {
+            nextAppState.playerxLocation--;
+        }
     } 
     if (KEY_DOWN(BUTTON_R, keysPressedNow)) {
-        nextAppState.playerxLocation++;
+        if (nextAppState.playerxLocation < WIDTH-20) {
+            nextAppState.playerxLocation++;
+        }
     } 
     if (KEY_DOWN(BUTTON_UP, keysPressedNow)) {
-        nextAppState.playeryLocation++;
+        if (nextAppState.playeryLocation > 0) {
+            nextAppState.playeryLocation--;
+        }
+        
     }
     if (KEY_DOWN(BUTTON_DOWN, keysPressedNow)) {
-        nextAppState.playeryLocation--;
+        if (nextAppState.playeryLocation < HEIGHT - 40) {
+            nextAppState.playeryLocation++;
+        }
     }
 
+    if (KEY_DOWN(BUTTON_SELECT, keysPressedNow)) {
+        nextAppState.gameOver = 1;
+    }
     UNUSED(keysPressedBefore);
-    
 
     return nextAppState;
+}
+
+int * checkForCollisions(AppState* currentAppState) {
+    static int counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    int playerX = currentAppState->playerxLocation;
+    int playerY = currentAppState->playeryLocation;
+    for (int i = 0; i < 5; i++) {
+        coin currCoin = currentAppState->coins[i];
+        if (currCoin.x < playerX + 20 &&
+            currCoin.x + 15 > playerX &&
+            currCoin.y < playerY + 20 &&
+            currCoin.y + 15 > playerY) {
+            counter[i] = 1;
+        }
+    }
+    currentAppState->numOfCoinsCollected++;
+    return counter;
 }

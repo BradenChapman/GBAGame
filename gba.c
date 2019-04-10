@@ -36,7 +36,7 @@ void setPixel(int x, int y, u16 color) {
 
 void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
     // TA-TODO: IMPLEMENT
-    for (int i = x; i < x + height; i++) {
+    for (int i = 0; i < height; i++) {
         DMA[3].src = &color;
         DMA[3].dst = videoBuffer + OFFSET(y + i, x, WIDTH);
         DMA[3].cnt = DMA_ON | width | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT;

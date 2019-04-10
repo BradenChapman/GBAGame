@@ -18,9 +18,9 @@ Starting Mednafen 0.9.48
    Loading override settings from "/cs2110/.mednafen/pgconfig/CoinCollector.gba.cfg"...
     Failed: Error opening file "/cs2110/.mednafen/pgconfig/CoinCollector.gba.cfg": No such file or directory
 
-   ROM:       242KiB
-   ROM CRC32: 0xe9ce1c64
-   ROM MD5:   0xd3793e77474d87e59b3c7d1e11ea7073
+   ROM:       243KiB
+   ROM CRC32: 0x18e916b3
+   ROM MD5:   0x6b77e83c4f41902b9af65388fd50d9af
 
   Loading custom palette from "/cs2110/.mednafen/palettes/gba.pal"...
    Error: Error opening file "/cs2110/.mednafen/palettes/gba.pal": No such file or directory
@@ -41,7 +41,7 @@ Initializing video...
   Special Scaler: None
   Scanlines: Off
   Destination Rectangle: X=0, Y=0, W=480, H=320
-  OpenGL Implementation: VMware, Inc. llvmpipe (LLVM 6.0, 256 bits) 3.0 Mesa 18.0.5
+  OpenGL Implementation: VMware, Inc. llvmpipe (LLVM 6.0, 128 bits) 3.0 Mesa 18.0.5
   Checking extensions:
    GL_ARB_texture_non_power_of_two found.
    GL_ARB_sync found.

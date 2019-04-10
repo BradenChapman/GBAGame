@@ -56,6 +56,8 @@ int main(void) {
 
                 break;
             case START_NODRAW:
+
+
                 // TA-TODO: Check for a button press here to start the app.
                 // Start the app by switching the state to APP_INIT.
                 if (KEY_DOWN(BUTTON_START, currentButtons)) {
@@ -66,35 +68,77 @@ int main(void) {
             case APP_INIT:
                 // Initialize the app. Switch to the APP state.
                 initializeAppState(&currentAppState);
+                initializeAppState(&nextAppState);
 
                 // Draw the initial state of the app
                 // fullDrawAppState(&currentAppState);
                 drawFullScreenImageDMA(GameScreen);
                 drawImageDMA(currentAppState.playerxLocation, currentAppState.playeryLocation, 20, 20, Player);
+                drawString(120, 150, "Coins remaining: ", BLACK);
+                drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "4", BLACK);
+                drawRectDMA(136, 92, 15, 15, CUSTOM);
+
 
                 state = APP;
                 break;
             case APP:
+                if (KEY_DOWN(BUTTON_SELECT, currentButtons)) {
+                    state = START;
+                }
                 // Process the app for one frame, store the next state
                 nextAppState = processAppState(&currentAppState, previousButtons, currentButtons);
 
                 // Wait for VBlank before we do any drawing.
                 waitForVBlank();
 
-                // Undraw the previous state
-                undrawAppState(&currentAppState);
+                int movedRight = currentAppState.playerxLocation < nextAppState.playerxLocation;
+                int movedLeft = currentAppState.playerxLocation > nextAppState.playerxLocation;
+                int movedDown = currentAppState.playeryLocation < nextAppState.playeryLocation;
+                int movedUp = currentAppState.playeryLocation > nextAppState.playeryLocation;
 
-                // Draw the current state
-                drawAppState(&nextAppState);
+                //Check where player moved and cover its trail
+                if (movedDown) {
+                    drawRectDMA(nextAppState.playerxLocation, nextAppState.playeryLocation - 1, 20, 1, CUSTOM);
+                } 
+                if (movedUp) {
+                    drawRectDMA(nextAppState.playerxLocation, nextAppState.playeryLocation + 20, 20, 1, CUSTOM);
+                }
+                if (movedRight) {
+                    drawRectDMA(nextAppState.playerxLocation - 1, nextAppState.playeryLocation, 1, 20, CUSTOM);
+                }
+                if (movedLeft) {
+                    drawRectDMA(nextAppState.playerxLocation + 20, nextAppState.playeryLocation, 1, 20, CUSTOM);
+                }
 
-                // Now set the current state as the next state for the next iter.
-                currentAppState = nextAppState;
+                
+                int *whichCoin = checkForCollisions(&nextAppState);
+
+                for(int i = 0; i < 5; i++) {
+                    if (whichCoin[i]) {
+                        coverCoin(&nextAppState, i);
+                    }
+                }
+                int numRemaining = 4 - currentAppState.numOfCoinsCollected;
+                if (numRemaining == 3) {
+                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "3", BLACK);
+                } else if (numRemaining == 2) {
+                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "2", BLACK);
+                } else if (numRemaining == 1) {
+                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "1", BLACK);
+                }
+
+                
+                //Draw player in new location
+                drawImageDMA(nextAppState.playerxLocation, nextAppState.playeryLocation, 20, 20, Player);
 
                 // Check if the app is exiting. If it is, then go to the exit state.
                 if (nextAppState.gameOver) {
-                    state = APP_EXIT;
+                    currentAppState = nextAppState;
+                    state = START;
                 }
 
+                // Now set the current state as the next state for the next iter.
+                currentAppState = nextAppState;
                 break;
             case APP_EXIT:
                 // Wait for VBlank
