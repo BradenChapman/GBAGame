@@ -56,11 +56,9 @@ int main(void) {
 
                 break;
             case START_NODRAW:
-
-
                 // TA-TODO: Check for a button press here to start the app.
                 // Start the app by switching the state to APP_INIT.
-                if (KEY_DOWN(BUTTON_START, currentButtons) & ~KEY_JUST_PRESSED(BUTTON_START, currentButtons, previousButtons)) {
+                if (KEY_JUST_PRESSED(BUTTON_START, currentButtons, previousButtons)) {
                     state = APP_INIT;
                 }
 
@@ -68,7 +66,7 @@ int main(void) {
             case APP_INIT:
                 // Initialize the app. Switch to the APP state.
                 initializeAppState(&currentAppState);
-                initializeAppState(&nextAppState);
+                nextAppState = currentAppState;
 
                 // Draw the initial state of the app
                 // fullDrawAppState(&currentAppState);
@@ -85,6 +83,7 @@ int main(void) {
                 if (KEY_DOWN(BUTTON_SELECT, currentButtons)) {
                     state = START;
                 }
+                
                 // Process the app for one frame, store the next state
                 nextAppState = processAppState(&currentAppState, previousButtons, currentButtons);
 
@@ -110,16 +109,17 @@ int main(void) {
                     drawRectDMA(nextAppState.playerxLocation + 20, nextAppState.playeryLocation, 1, 20, CUSTOM);
                 }
 
-                if (vBlankCounter % 30 == 0) {
-                    int *whichCoin = checkForCollisions(&nextAppState);
-
-                    for(int i = 0; i < 5; i++) {
-                        if (whichCoin[i]) {
-                            coverCoin(&nextAppState, i);
-                        }
+                int whichCoin = 10;
+                if (vBlankCounter % 15 == 0) {
+                    whichCoin = checkForCollisions(&nextAppState);
+                    if (whichCoin != 10) {
+                        coverCoin(&currentAppState, whichCoin);
+                        whichCoin = 10;
                     }
                 }
 
+                
+                
                 
             
                 //Draw player in new location
@@ -130,7 +130,7 @@ int main(void) {
                 }
 
                 // Check if the app is exiting. If it is, then go to the exit state.
-                if (nextAppState.gameOver) {
+                if (nextAppState.gameOver == 1) {
                     currentAppState = nextAppState;
                     state = APP_EXIT;
                 }

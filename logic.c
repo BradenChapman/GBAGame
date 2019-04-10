@@ -100,11 +100,11 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     return nextAppState;
 }
 
-int * checkForCollisions(AppState* currentAppState) {
-    static int counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+int checkForCollisions(AppState* currentAppState) {
     int playerX = currentAppState->playerxLocation;
     int playerY = currentAppState->playeryLocation;
     int coinCollected = 0;
+    int pos = 10;
     for (int i = 0; i < 5; i++) {
         coin currCoin = currentAppState->coins[i];
         int isCollected = currentAppState->coins[i].collected;
@@ -113,14 +113,14 @@ int * checkForCollisions(AppState* currentAppState) {
             currCoin.x + 15 > playerX &&
             currCoin.y < playerY + 20 &&
             currCoin.y + 15 > playerY) {
-            counter[i] = 1;
             coinCollected = 1;
             currentAppState->coins[i].collected = 1;
+            pos = i;
         }
     }
     if (coinCollected) {
         currentAppState->numOfCoinsCollected++;
     }
     
-    return counter;
+    return pos;
 }
