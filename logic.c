@@ -20,14 +20,14 @@ void initializeAppState(AppState* appState) {
     appState->bombs[0].y = 102;
     appState->bombs[1].x = 120;
     appState->bombs[1].y = 10;
-    appState->bombs[2].x = 40;
-    appState->bombs[2].x = 60;
+    appState->bombs[2].x = 45;
+    appState->bombs[2].x = 61;
 
     appState->numOfCoinsCollected = 0;
     appState->gameOver = 0; 
 
     appState->playerxLocation = 220;
-    appState->playeryLocation = 120;
+    appState->playeryLocation = 121;
 
     appState->stringxLocation = 225;
     appState->stringyLocation = 150;
@@ -70,12 +70,12 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     AppState nextAppState = *currentAppState;
 
     //Process movement
-   if (KEY_DOWN(BUTTON_L, keysPressedNow)){
+   if (KEY_DOWN(BUTTON_LEFT, keysPressedNow)){
         if (nextAppState.playerxLocation > 0) {
             nextAppState.playerxLocation--;
         }
     } 
-    if (KEY_DOWN(BUTTON_R, keysPressedNow)) {
+    if (KEY_DOWN(BUTTON_RIGHT, keysPressedNow)) {
         if (nextAppState.playerxLocation < WIDTH-20) {
             nextAppState.playerxLocation++;
         }
@@ -103,9 +103,8 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
 int checkForCollisions(AppState* currentAppState) {
     int playerX = currentAppState->playerxLocation;
     int playerY = currentAppState->playeryLocation;
-    int coinCollected = 0;
     int pos = 10;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
         coin currCoin = currentAppState->coins[i];
         int isCollected = currentAppState->coins[i].collected;
         if (!isCollected &&
@@ -113,14 +112,27 @@ int checkForCollisions(AppState* currentAppState) {
             currCoin.x + 15 > playerX &&
             currCoin.y < playerY + 20 &&
             currCoin.y + 15 > playerY) {
-            coinCollected = 1;
             currentAppState->coins[i].collected = 1;
             pos = i;
+            currentAppState->numOfCoinsCollected++;
         }
-    }
-    if (coinCollected) {
-        currentAppState->numOfCoinsCollected++;
     }
     
     return pos;
+}
+
+int checkForBombs(AppState *appState) {
+    int playerX = appState->playerxLocation;
+    int playerY = appState->playeryLocation;
+    int hitBomb = 0;
+    for (int i = 0; i <= 1; i++) {
+        bomb currBomb = appState->bombs[i];
+        if (currBomb.x < playerX + 20 &&
+            currBomb.x + 15 > playerX &&
+            currBomb.y < playerY + 20 &&
+            currBomb.y + 15 > playerY) {
+            hitBomb = 1;
+        }
+    }
+    return hitBomb;
 }

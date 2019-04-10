@@ -1,7 +1,7 @@
 /*
  * Exported with nin10kit v1.7
- * Invocation command was nin10kit --mode=3 --resize=240x160 images/gamescreen images/GameScreen.png 
- * Time-stamp: Tuesday 04/09/2019, 03:15:29
+ * Invocation command was nin10kit --mode=3 --resize=240x160 images/GameScreen images/GameScreen.png 
+ * Time-stamp: Wednesday 04/10/2019, 22:18:51
  * 
  * Image Information
  * -----------------

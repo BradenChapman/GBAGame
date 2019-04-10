@@ -15,7 +15,7 @@ PROGNAME = CoinCollector
 # that will be compiled into your program. For example
 # if you have main.c and myLib.c then in the following
 # line you would put main.o and myLib.o
-OFILES = gba.o font.o draw.o logic.o main.o images/garbage.o images/startScreen.o images/coin.o images/Bomb.o images/gamescreen.o images/player.o
+OFILES = gba.o font.o draw.o logic.o main.o images/garbage.o images/startScreen.o images/coin.o images/Bomb.o images/GameScreen.o images/player.o images/winScreen.o images/failScreen.o
 
 ################################################################################
 # These are various settings used to make the GBA toolchain work
