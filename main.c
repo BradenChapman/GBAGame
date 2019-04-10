@@ -60,7 +60,7 @@ int main(void) {
 
                 // TA-TODO: Check for a button press here to start the app.
                 // Start the app by switching the state to APP_INIT.
-                if (KEY_DOWN(BUTTON_START, currentButtons)) {
+                if (KEY_DOWN(BUTTON_START, currentButtons) & ~KEY_JUST_PRESSED(BUTTON_START, currentButtons, previousButtons)) {
                     state = APP_INIT;
                 }
 
@@ -110,31 +110,29 @@ int main(void) {
                     drawRectDMA(nextAppState.playerxLocation + 20, nextAppState.playeryLocation, 1, 20, CUSTOM);
                 }
 
-                
-                int *whichCoin = checkForCollisions(&nextAppState);
+                if (vBlankCounter % 30 == 0) {
+                    int *whichCoin = checkForCollisions(&nextAppState);
 
-                for(int i = 0; i < 5; i++) {
-                    if (whichCoin[i]) {
-                        coverCoin(&nextAppState, i);
+                    for(int i = 0; i < 5; i++) {
+                        if (whichCoin[i]) {
+                            coverCoin(&nextAppState, i);
+                        }
                     }
                 }
-                int numRemaining = 4 - currentAppState.numOfCoinsCollected;
-                if (numRemaining == 3) {
-                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "3", BLACK);
-                } else if (numRemaining == 2) {
-                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "2", BLACK);
-                } else if (numRemaining == 1) {
-                    drawString(currentAppState.stringxLocation, currentAppState.stringyLocation, "1", BLACK);
-                }
 
                 
+            
                 //Draw player in new location
                 drawImageDMA(nextAppState.playerxLocation, nextAppState.playeryLocation, 20, 20, Player);
+
+                if (nextAppState.numOfCoinsCollected == 4) {
+                    nextAppState.gameOver = 1;
+                }
 
                 // Check if the app is exiting. If it is, then go to the exit state.
                 if (nextAppState.gameOver) {
                     currentAppState = nextAppState;
-                    state = START;
+                    state = APP_EXIT;
                 }
 
                 // Now set the current state as the next state for the next iter.
@@ -145,12 +143,18 @@ int main(void) {
                 waitForVBlank();
 
                 // TA-TODO: Draw the exit / gameover screen
+                drawRectDMA(40, 40, 160, 80, MAGENTA);
+                drawString(45, 45, "You won! Nicely done!", BLACK);
+                drawString(45, 100, "Press START to", BLACK);
+                drawString(45, 110, "return to start screen", BLACK);
 
                 state = APP_EXIT_NODRAW;
                 break;
             case APP_EXIT_NODRAW:
                 // TA-TODO: Check for a button press here to go back to the start screen
-
+                if (KEY_DOWN(BUTTON_START, currentButtons)) {
+                    state = START;
+                }
                 break;
         }
         

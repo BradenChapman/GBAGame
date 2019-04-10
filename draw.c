@@ -48,6 +48,12 @@ void drawAppState(AppState *state) {
 void coverCoin(AppState *currentAppState, int pos) {
 	drawRectDMA(currentAppState->coins[pos].x, currentAppState->coins[pos].y, 15, 15, CUSTOM);
 	drawRectDMA(currentAppState->stringxLocation, currentAppState->stringyLocation, 10, 10, CUSTOM);
-	
-
+	int numRemaining = 4 - currentAppState->numOfCoinsCollected;
+    if (numRemaining == 3) {
+        drawString(currentAppState->stringxLocation, currentAppState->stringyLocation, "3", BLACK);
+    } else if (numRemaining == 2) {
+        drawString(currentAppState->stringxLocation, currentAppState->stringyLocation, "2", BLACK);
+    } else if (numRemaining == 1) {
+        drawString(currentAppState->stringxLocation, currentAppState->stringyLocation, "1", BLACK);
+    }
 }

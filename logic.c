@@ -12,6 +12,9 @@ void initializeAppState(AppState* appState) {
     appState->coins[2].y = 32;
     appState->coins[3].x = 196;
     appState->coins[3].y = 67;
+    for (int i = 0; i < 4; i++) {
+        appState->coins[i].collected = 0;
+    }
 
     appState->bombs[0].x = 118;
     appState->bombs[0].y = 102;
@@ -101,15 +104,23 @@ int * checkForCollisions(AppState* currentAppState) {
     static int counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     int playerX = currentAppState->playerxLocation;
     int playerY = currentAppState->playeryLocation;
+    int coinCollected = 0;
     for (int i = 0; i < 5; i++) {
         coin currCoin = currentAppState->coins[i];
-        if (currCoin.x < playerX + 20 &&
+        int isCollected = currentAppState->coins[i].collected;
+        if (!isCollected &&
+            currCoin.x < playerX + 20 &&
             currCoin.x + 15 > playerX &&
             currCoin.y < playerY + 20 &&
             currCoin.y + 15 > playerY) {
             counter[i] = 1;
+            coinCollected = 1;
+            currentAppState->coins[i].collected = 1;
         }
     }
-    currentAppState->numOfCoinsCollected++;
+    if (coinCollected) {
+        currentAppState->numOfCoinsCollected++;
+    }
+    
     return counter;
 }
